@@ -192,9 +192,9 @@ The python version used in this project is `3.10.19` installed via a miniconda v
 ###  Clone the repository
 
 ```bash
-git clone https://github.com/AkshayB353/AI-based-Eye-Blink-and-Body-Posture-Microservice.git
+git clone https://github.com/AkshayB353/Auto_Eye_Posture_Annotation_API.git
 
-cd AI-based-Eye-Blink-and-Body-Posture-Microservice
+cd Auto_Eye_Posture_Annotation_API
 ```
 
 ###  Create and activate a virtual environment
