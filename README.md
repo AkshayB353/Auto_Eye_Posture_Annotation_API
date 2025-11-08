@@ -274,9 +274,12 @@ POST /annotate
 ### Example `curl` Command
 
 ```bash
-curl -X POST "http://127.0.0.1:8000/annotate" \
-  -F "video_file=@sample_video.mp4" \
-  -o output_labels.json
+curl -X 'POST' \
+  'http://127.0.0.1:8000/annotate' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'video_file=@sample.mp4;type=video/mp4' \
+  -F 'grnd_truth=@sample.json;type=application/json'
 ```
 
 ### Example Response
