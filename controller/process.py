@@ -130,7 +130,7 @@ async def process_video_source(
         posture_info = process_posture_frame(frame, face_res, pose_res, posture_state)
 
         # per-frame labels
-        labels_per_frame[frame_no] = {
+        labels_per_frame[str(frame_no)] = {
             "eye_state": eye_info["status"],
             "posture": posture_info["status"]
         }

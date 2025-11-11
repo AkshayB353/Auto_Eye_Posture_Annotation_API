@@ -3,22 +3,30 @@ from sklearn.metrics import f1_score
 import numpy as np
 
 def compute_f1_scores(
-    ground_truth: Dict[int, Dict[str, str]],
-    generated: Dict[int, Dict[str, str]]
+    ground_truth: Dict[str, Dict[str, str]],
+    generated: Dict[str, Dict[str, str]]
 ) -> Dict[str, float]:
     """
     Compares ground truth and generated labels per frame.
-    Returns F1 score for eye_state and posture.
+    Handles string frame keys safely with numerical sorting.
     """
     if not ground_truth:
         return {"eye_f1": None, "posture_f1": None}
 
-    gt_frames = sorted(ground_truth.keys())
-    gen_frames = sorted(generated.keys())
+    # Convert string keys to int 
+    gt_frames = sorted(ground_truth.keys(), key=int)
+    gen_frames = sorted(generated.keys(), key=int)
 
-    # must have same frame count
     if len(gt_frames) != len(gen_frames):
-        raise ValueError("Frame count mismatch between ground truth and generated")
+        raise ValueError(
+            f"Frame count mismatch: GT has {len(gt_frames)}, "
+            f"Generated has {len(gen_frames)}"
+        )
+
+    # check all gt frames exist in generated
+    missing = [f for f in gt_frames if f not in generated]
+    if missing:
+        raise ValueError(f"Missing generated labels for frames: {missing[:10]}")
 
     eye_gt = []
     eye_pred = []
@@ -26,19 +34,14 @@ def compute_f1_scores(
     posture_pred = []
 
     for frame in gt_frames:
-        if frame not in generated:
-            raise ValueError(f"Missing generated label for frame {frame}")
-
         gt = ground_truth[frame]
         pred = generated[frame]
-
         eye_gt.append(gt.get("eye_state", ""))
         eye_pred.append(pred.get("eye_state", ""))
-
         posture_gt.append(gt.get("posture", ""))
         posture_pred.append(pred.get("posture", ""))
 
-    #F1 
+    # F1
     eye_f1 = f1_score(eye_gt, eye_pred, average='macro', zero_division=0)
     posture_f1 = f1_score(posture_gt, posture_pred, average='macro', zero_division=0)
 
