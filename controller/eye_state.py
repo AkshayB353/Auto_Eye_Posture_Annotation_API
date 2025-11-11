@@ -35,6 +35,7 @@ def init_eye_state(fps: float = 30.0):
         "closed_counter": 0,
         "open_counter": 0,
         "warmed_up": False,  # will set to True during calibration
+        "first_warmup_done": False
     }
 
 def _ear_from_landmarks(lm):
@@ -82,6 +83,13 @@ def process_eye_frame(frame_bgr, face_results, state):
         if len(state["ear_history"]) >= state["min_history"]:
             state["warmed_up"] = True
             info["status"] = "Warming Up... (Done)"
+            if not state["first_warmup_done"]:
+                state["blink_count"] = 0
+                state["eyes_closed"] = False
+                state["closed_counter"] = 0
+                state["open_counter"] = 0
+                state["first_warmup_done"] = True
+
         else:
             info["status"] = f"Warming Up... ({len(state['ear_history'])}/{state['min_history']})"
         return state, info
